@@ -5,18 +5,21 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using Jotunn.Utils;
 using UnityEngine;
 
 namespace TruePassiveMobs
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInDependency(Jotunn.Main.ModGuid)]
+    [NetworkCompatibility(CompatibilityLevel.ClientMustHaveMod, VersionStrictness.Minor)]
     [BepInProcess("valheim.exe")]
     [BepInProcess("valheim_server.exe")]
     public class Plugin : BaseUnityPlugin
     {
         public const string PluginGUID = "com.lhoffl.TruePassiveMobs";
         public const string PluginName = "TruePassiveMobs";
-        public const string PluginVersion = "1.0.0";
+        public const string PluginVersion = "1.0.1";
 
         internal static ManualLogSource Log;
 

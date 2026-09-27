@@ -20,10 +20,13 @@ namespace TruePassiveMobs
 
         private static readonly ConditionalWeakTable<MonsterAI, State> s_states = new ConditionalWeakTable<MonsterAI, State>();
 
-        public static bool CanEverBeAfraid(MonsterAI ai)
+        public static bool CanBeAfraid(MonsterAI ai)
         {
             Character character = ai.m_character;
-            return character != null && !character.IsTamed() && !character.IsBoss() && character.GetFaction() != Character.Faction.Boss && !Creatures.IsFearExcluded(character);
+            if (character == null || character.IsTamed() || character.IsBoss() || character.GetFaction() == Character.Faction.Boss || Creatures.IsFearExcluded(character)) return false;
+            if (ModConfig.RaidersNeverFlee.Value && ai.IsEventCreature()) return false;
+            if (ModConfig.FightBackWhenAttacked.Value && Provocation.WasHitByPlayerWithin(character, ModConfig.FightBackDuration.Value)) return false;
+            return true;
         }
 
         public static Player GetFearedPlayer(MonsterAI ai)
@@ -113,7 +116,7 @@ namespace TruePassiveMobs
                 return true;
             }
 
-            if (!ModConfig.FearEnabled.Value || !FearOfStrongPlayers.CanEverBeAfraid(__instance)) return true;
+            if (!ModConfig.FearEnabled.Value || !FearOfStrongPlayers.CanBeAfraid(__instance)) return true;
             
             Player feared = FearOfStrongPlayers.GetFearedPlayer(__instance);
             if (feared == null) return true;

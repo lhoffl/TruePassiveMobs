@@ -34,6 +34,9 @@
 
   <ItemGroup>
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
+    <!-- Compile against Jotunn only; players install it separately (Thunderstore: ValheimModding-Jotunn).
+         IncludeAssets="compile" also skips JotunnLib's own build targets. -->
+    <PackageReference Include="JotunnLib" Version="2.29.0" IncludeAssets="compile" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

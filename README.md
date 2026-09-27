@@ -4,6 +4,10 @@ A BepInEx mod for Valheim 1.0 with two independent features (both on by default)
 
 1. **Passive creatures:** By default Lox, Asksvin, Moose, Boar, Hen, Neck, and Bjorn leave players alone until a player damages them. After that they fight back as normal for `ProvokedDuration` seconds after the last hit, then calm down again.
 2. **Enemies fear strong players:** non-passive enemies run away from players whose gear outclasses it, instead of attacking.
+   An enemy you attack stops running and fights back until `FightBackDuration` seconds after your last hit.
+   Raid creatures never run away.
+
+Requires [Jötunn](https://thunderstore.io/c/valheim/p/ValheimModding/Jotunn/).
 
 ## How "outclassed" is decided
 
@@ -30,10 +34,9 @@ it, so you can tune it while the game runs.
 
 ## Multiplayer
 
-Creatures are simulated by whichever client owns them, so every player needs the mod. Each client
-publishes its own player's armor, resistances and weapon damage, so enemies judge every player by
-that player's real gear. Players without the mod are never feared. The config isn't synced, so
-everyone should use the same settings.
+Required on the server and every client.
+
+Settings are synced from the server to the clients. Config changes are synced live.
 
 ## Building
 

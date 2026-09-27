@@ -6,8 +6,6 @@ namespace TruePassiveMobs
 {
     internal static class PassiveCreatures
     {
-        private static readonly int s_provokedUntilKey = "TruePassiveMobs.ProvokedUntil".GetStableHashCode();
-
         public static bool ShouldIgnorePlayers(BaseAI ai)
         {
             if (!ModConfig.PassiveEnabled.Value || ai is not MonsterAI) return false;
@@ -15,31 +13,8 @@ namespace TruePassiveMobs
             return character != null && !character.IsTamed() && Creatures.IsPassive(character) && !IsProvoked(character);
         }
 
-        public static bool IsProvoked(Character character)
-        {
-            ZDO zdo = character.m_nview != null && character.m_nview.IsValid() ? character.m_nview.GetZDO() : null;
-            return zdo != null && zdo.GetLong(s_provokedUntilKey) > NowMs();
-        }
-
-        private static void Provoke(Character character, Player attacker)
-        {
-            long until = NowMs() + (long)(ModConfig.ProvokedDuration.Value * 1000f);
-            character.m_nview.GetZDO().Set(s_provokedUntilKey, until);
-        }
-
-        private static long NowMs() => (long)(ZNet.instance.GetTimeSeconds() * 1000.0);
-
-        [HarmonyPatch(typeof(Character), nameof(Character.RPC_Damage))]
-        private static class Character_RPC_Damage_Patch
-        {
-            private static void Prefix(Character __instance, HitData hit)
-            {
-                if (!ModConfig.PassiveEnabled.Value || __instance.IsPlayer() || hit == null || !hit.HaveAttacker()) return;
-                ZNetView nview = __instance.m_nview;
-                if (nview == null || !nview.IsValid() || !nview.IsOwner() || __instance.GetBaseAI() is not MonsterAI) return;
-                if (hit.GetAttacker() is Player attacker && Creatures.IsPassive(__instance)) Provoke(__instance, attacker);
-            }
-        }
+        public static bool IsProvoked(Character character) =>
+            Provocation.WasHitByPlayerWithin(character, ModConfig.ProvokedDuration.Value);
 
         [HarmonyPatch(typeof(BaseAI), nameof(BaseAI.FindEnemy))]
         private static class BaseAI_FindEnemy_Patch

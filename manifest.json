@@ -1,0 +1,7 @@
+{
+  "name": "TruePassiveMobs",
+  "version_number": "1.0.1",
+  "website_url": "https://github.com/lhoffl/TruePassiveMobs",
+  "description": "Lox, Asksvin, Boar, Neck & more stay peaceful until attacked. Other enemies flee from players whose gear outclasses them.",
+  "dependencies": ["denikson-BepInExPack_Valheim-5.4.2333", "ValheimModding-Jotunn-2.30.2"]
+}
