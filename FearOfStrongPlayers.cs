@@ -1,6 +1,4 @@
-using System;
 using System.Runtime.CompilerServices;
-using HarmonyLib;
 using UnityEngine;
 
 namespace TruePassiveMobs
@@ -78,53 +76,6 @@ namespace TruePassiveMobs
                 }
             }
             return best;
-        }
-
-        public static void Flee(MonsterAI ai, Player feared, float dt)
-        {
-            if (ai.m_targetCreature != null || ai.m_targetStatic != null)
-            {
-                ai.m_targetCreature = null;
-                ai.m_targetStatic = null;
-                ai.SetTargetInfo(ZDOID.None);
-            }
-            ai.ChargeStop();
-            ai.SetAlerted(true);
-            ai.Flee(dt, feared.transform.position);
-        }
-    }
-
-    [HarmonyPatch]
-    internal static class BaseAIReversePatch
-    {
-        [HarmonyReversePatch]
-        [HarmonyPatch(typeof(BaseAI), nameof(BaseAI.UpdateAI))]
-        public static bool BaseUpdateAI(BaseAI instance, float dt) => throw new NotImplementedException("Harmony reverse patch stub");
-    }
-
-    [HarmonyPatch(typeof(MonsterAI), nameof(MonsterAI.UpdateAI))]
-    internal static class MonsterAI_UpdateAI_Patch
-    {
-        private static bool Prefix(MonsterAI __instance, float dt, ref bool __result)
-        {
-            ZNetView nview = __instance.m_nview;
-            if (nview == null || !nview.IsValid() || !nview.IsOwner() || __instance.IsSleeping()) return true;
-
-            if (ModConfig.PassiveEnabled.Value && Creatures.IsPassive(__instance.m_character))
-            {
-                if (PassiveCreatures.ShouldIgnorePlayers(__instance)) PassiveCreatures.ForgetPlayers(__instance);
-                return true;
-            }
-
-            if (!ModConfig.FearEnabled.Value || !FearOfStrongPlayers.CanBeAfraid(__instance)) return true;
-            
-            Player feared = FearOfStrongPlayers.GetFearedPlayer(__instance);
-            if (feared == null) return true;
-
-            __result = BaseAIReversePatch.BaseUpdateAI(__instance, dt);
-            if (__result) FearOfStrongPlayers.Flee(__instance, feared, dt);
-            
-            return false;
         }
     }
 }

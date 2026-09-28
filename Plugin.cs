@@ -19,7 +19,7 @@ namespace TruePassiveMobs
     {
         public const string PluginGUID = "com.lhoffl.TruePassiveMobs";
         public const string PluginName = "TruePassiveMobs";
-        public const string PluginVersion = "1.0.1";
+        public const string PluginVersion = "1.1.0";
 
         internal static ManualLogSource Log;
 
@@ -44,6 +44,7 @@ namespace TruePassiveMobs
                 Log.LogInfo("Config reloaded");
             }
             ProfileSync.Update();
+            ModConfig.WarnAboutUnknownNames();
         }
 
         private void OnDestroy()

@@ -3,19 +3,29 @@ using UnityEngine;
 
 namespace TruePassiveMobs
 {
+    internal enum Temperament
+    {
+        Hostile,
+        Passive,
+        Skittish,
+        Territorial,
+    }
+
     internal static class Creatures
     {
         private sealed class Info
         {
             public string PrefabName;
             public int ListVersion = -1;
-            public bool Passive;
+            public Temperament Temperament;
             public bool FearExcluded;
         }
 
         private static readonly ConditionalWeakTable<Character, Info> s_info = new ConditionalWeakTable<Character, Info>();
 
-        public static bool IsPassive(Character character) => GetInfo(character).Passive;
+        public static Temperament GetTemperament(Character character) => GetInfo(character).Temperament;
+
+        public static bool IsPassive(Character character) => GetInfo(character).Temperament != Temperament.Hostile;
 
         public static bool IsFearExcluded(Character character) => GetInfo(character).FearExcluded;
 
@@ -28,7 +38,7 @@ namespace TruePassiveMobs
             if (info.ListVersion != ModConfig.ListVersion)
             {
                 info.ListVersion = ModConfig.ListVersion;
-                info.Passive = ModConfig.IsPassiveName(info.PrefabName);
+                info.Temperament = ModConfig.GetTemperament(info.PrefabName);
                 info.FearExcluded = ModConfig.IsFearExcludedName(info.PrefabName);
             }
             return info;
